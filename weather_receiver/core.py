@@ -1,5 +1,6 @@
 # Copyright 2021 Florian Tautz
 import contextlib
+from datetime import datetime
 
 import serial
 import requests
@@ -16,14 +17,15 @@ class WeatherReceiver:
     def run(self):
         with contextlib.ExitStack() as stack:
             port = stack.enter_context(serial.Serial(self.port, timeout=SERIAL_TIMEOUT))
-            fp = stack.enter_context(open(self.file, "ab"))
+            fp = stack.enter_context(open(self.file, "a"))
 
             while True:
                 raw_line = port.readline()
                 if len(raw_line) == 0:
                     continue
-                fp.write(raw_line)
-                requests.post(self.api_url, data=raw_line)
+                line = datetime.utcnow().isoformat() + raw_line.decode("ascii").rstrip()
+                fp.write(line + "\n")
+                requests.post(self.api_url, data=line)
 
 
 def main():
