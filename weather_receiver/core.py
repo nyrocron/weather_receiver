@@ -61,7 +61,10 @@ def main():
     logging.getLogger().addHandler(logfile_handler)
 
     receiver = WeatherReceiver(args.serial_port, args.api_url, args.file)
-    receiver.run()
+    try:
+        receiver.run()
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == '__main__':
