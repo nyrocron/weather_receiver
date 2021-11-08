@@ -32,6 +32,7 @@ class WeatherReceiver:
                 logger.info("received " + line)
                 try:
                     fp.write(line + "\n")
+                    fp.flush()
                 except:
                     logger.exception("failed to save measurement to file")
                 try:
